@@ -29,6 +29,11 @@ const hasNonOptionalDiff = !! ( process.argv[ 2 ] || '' )
 	// If no more line diffs remain after above, remove diff heading for file.
 	.replace( /diff --git a\/package-lock.json b\/package-lock.json\nindex \w+..\w+ \d+\n--- a\/package-lock.json\n\+\+\+ b\/package-lock.json\n(?!@@)/, '' );
 
+process.stdout.write( ( process.argv[ 2 ] || '' )
+	// Strip individual diffs of optional-only.
+	.replace( /@@ -\d+ \+\d+,\d+ @@\n-.+\n\+.+,\n\+.+\"optional\": true\n/gm, '' )
+	// If no more line diffs remain after above, remove diff heading for file.
+	.replace( /diff --git a\/package-lock.json b\/package-lock.json\nindex \w+..\w+ \d+\n--- a\/package-lock.json\n\+\+\+ b\/package-lock.json\n(?!@@)/, '' ) );
 
 // Exit with error code if, after replace, changes still exist.
 process.exit( hasNonOptionalDiff ? 1 : 0 );
